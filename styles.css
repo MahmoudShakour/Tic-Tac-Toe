@@ -1,0 +1,57 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html,body{
+    height: 100%;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+.header,
+.footer
+{
+    font-size: 40px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #858181;
+    display: grid;
+    place-items: center;
+}
+
+.container{
+    flex:1;
+    padding: 300px;
+}
+
+
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,200px);
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.cell{
+    display: grid;
+    place-content: center;
+    padding: 20px;
+    font-size: 50px;
+    font-weight: bold;
+    border: 2px solid black;
+}
+
+.ending-expression{
+    display: grid;
+    place-content: center;
+    padding: 20px;
+    font-size: 50px;
+    font-weight: bold;
+    border: 2px solid black;
+}
