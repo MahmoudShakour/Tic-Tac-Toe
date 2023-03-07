@@ -19,10 +19,36 @@ const manipulateDom=(()=>{
     };
 
     const createEndingdiv=(expression)=>{
+
+        const parent=document.createElement("div");
+        parent.className="parent";
+
         const div=document.createElement("p");
         div.className="ending-expression";
         div.textContent=expression;
-        return div;
+        
+        const player1=document.createElement("div");
+        player1.className="ending-player";
+        player1.textContent=Game.players[0].name+": "+Game.players[0].points;
+        
+        const player2=document.createElement("div");
+        player2.className="ending-player";
+        player2.textContent=Game.players[1].name+": "+Game.players[1].points;
+
+        const players=document.createElement("div");
+        players.className="players";
+        players.appendChild(player1);
+        players.appendChild(player2);
+
+        const button=document.createElement("button");
+        button.addEventListener("click",Game.tryAgain);
+        button.textContent="Try Again";
+
+
+        parent.appendChild(div);
+        parent.appendChild(players);
+        parent.appendChild(button);
+        return parent;
     };
 
     const showWinningResult=(winner,loser)=>{
@@ -37,11 +63,25 @@ const manipulateDom=(()=>{
         addToContainer(createEndingdiv("It Is A Boring Draw. Try Again!"));
     };
 
+    const activateSubmission=()=>{
+        const form=document.querySelector("form");
+        form.addEventListener("submit",(e)=>{
+            e.preventDefault();
+            // console.log(e.currentTarget);
+            Game.players.push(playerfactory("X",e.currentTarget.FirstPlayer.value));
+            Game.players.push(playerfactory("O",e.currentTarget.SecondPlayer.value));
+            deleteFromContainer(form);
+            Game.startGame();
+        });
+    }
+
     return {
         addToContainer,
         createGrid,
         showWinningResult,
-        showDrawingResult
+        showDrawingResult,
+        activateSubmission,
+        deleteFromContainer
     };
 })();
 
@@ -69,9 +109,11 @@ const cellFactory=(row,col)=>{
                 // console.log(Game.players);
 
                 if(Game.players[0].char===winningChar){
+                    Game.players[0].points++;
                     manipulateDom.showWinningResult(Game.players[0].name,Game.players[1].name);
                 }
                 else{
+                    Game.players[1].points++;
                     manipulateDom.showWinningResult(Game.players[1].name,Game.players[0].name);
                 }
             }
@@ -145,23 +187,32 @@ const Game=(()=>{
         return temp;
     };
 
-    const main=()=>{
-        let playerOneName=prompt("Enter player One Name:");
-        let playerTwoName=prompt("Enter player two Name:");
-        players.push(playerfactory("X",playerOneName));
-        players.push(playerfactory("O",playerTwoName));
+    const startGame=()=>{
         _fillBoard();
-        console.log(board);
-        const grid=manipulateDom.createGrid();
-        manipulateDom.addToContainer(grid);
+        char="X";
+        manipulateDom.addToContainer(manipulateDom.createGrid());
+    }
+
+    const tryAgain=()=>{
+        const parent=document.querySelector(".parent");
+        manipulateDom.deleteFromContainer(parent);
+        startGame();
+
+    }
+
+    const main=()=>{
+        manipulateDom.activateSubmission();
     };
 
-    return {isWin,putChar,main,isDraw,board,players};
+
+
+    return {isWin,putChar,main,isDraw,startGame,tryAgain,board,players};
 })();
 
 
 const playerfactory=(char,name)=>{
-    return {char,name};
+    let points=0;
+    return {char,name,points};
 };
 
 
